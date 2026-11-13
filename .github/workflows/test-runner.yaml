@@ -1,74 +1,49 @@
+name: Test Runner 
 
-name: Test Both Runners
+on: 
+  workflow_dispatch: 
+  
+jobs: 
+  verify-runner: 
+    runs-on: self-hosted 
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+       
+      - name: Print runner info 
+        run: | 
+          echo "=== Runner Environment ===" 
+          echo "Hostname:      $(hostname)"
+          echo "OS:            $(uname -a)" 
+          echo "User:          $(whoami)" 
+          echo "Working Dir:   $(pwd)" 
+          echo "CPU Cores:     $(nproc)" 
+          echo "Memory:" 
+          free -h 
+          echo "Disk:" 
+          df -h / 
+          echo "=========================="
+          
+      - name: Verify Docker 
+        run: | 
+          echo "=== Docker Verification ===" 
+          docker --version 
+          docker run --rm hello-world 
+          echo "Docker is working correctly!" 
+          echo "===========================" 
+          
+      - name: Verify AWS CLI 
+        run: | 
+          echo "=== AWS CLI Verification ===" 
+          aws --version 
+          aws sts get-caller-identity 
+          echo "AWS Region: ${AWS_REGION:-us-west-2}" 
+          echo "AWS CLI is configured correctly!" 
+          echo "=============================" 
 
-on:
-  workflow_dispatch:
-
-jobs:
-  test-runner-01:
-    name: Verify Runner 01
-    runs-on: [self-hosted, runner-01]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Print runner info
-        run: |
-          echo "=== Runner Environment ==="
-          echo "Runner: $RUNNER_NAME"
-          echo "Hostname: $(hostname)"
-          echo "OS: $(uname -a)"
-          echo "User: $(whoami)"
-          echo "Working Dir: $(pwd)"
-          echo "CPU Cores: $(nproc)"
-          free -h
-          df -h /
-
-      - name: Verify Docker
-        run: |
-          docker --version
-          docker run --rm hello-world
-
-      - name: Verify AWS CLI
-        run: |
-          aws --version
-          aws sts get-caller-identity
-          echo "AWS Region: ${AWS_REGION:-us-west-2}"
-
-      - name: Verify Git
-        run: git --version
-
-  test-runner-02:
-    name: Verify Runner 02
-    runs-on: [self-hosted, runner-02]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Print runner info
-        run: |
-          echo "=== Runner Environment ==="
-          echo "Runner: $RUNNER_NAME"
-          echo "Hostname: $(hostname)"
-          echo "OS: $(uname -a)"
-          echo "User: $(whoami)"
-          echo "Working Dir: $(pwd)"
-          echo "CPU Cores: $(nproc)"
-          free -h
-          df -h /
-
-      - name: Verify Docker
-        run: |
-          docker --version
-          docker run --rm hello-world
-
-      - name: Verify AWS CLI
-        run: |
-          aws --version
-          aws sts get-caller-identity
-          echo "AWS Region: ${AWS_REGION:-us-west-2}"
-
-      - name: Verify Git
-        run: git --version
+      - name: Verify Git 
+        run: | 
+          echo "=== Git Verification ===" 
+          git --version 
+          echo "Git is available!" 
+          echo "======================" 
